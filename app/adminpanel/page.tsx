@@ -1,34 +1,32 @@
-'use client'; 
-
+'use client';
 import React, { useEffect, useState } from 'react';
 import { Table, Button, Modal, Form, Input, message, Space, Select } from 'antd';
 import Header from '@/components/header/Header';
 import { QuestionType } from '@/types'; 
-import PlusOutlined from '@ant-design/icons'
+import { PlusOutlined } from '@ant-design/icons';
 import { 
   fetchQuestions, 
-  //fetchLanguages, 
   createQuestion, 
   updateQuestion, 
   deleteQuestion 
 } from '@/api/questionApi'; 
+import { TransformedQuestionType, Option } from '@/types';
 
 const AdminPanel = () => {
   const [questions, setQuestions] = useState<QuestionType[]>([]);
-  const [languages, setLanguages] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
   const [form] = Form.useForm();
   const [editingQuestion, setEditingQuestion] = useState<QuestionType | null>(null);
+
+  const languages = ["English", "Spanish"];
 
   useEffect(() => {
     const loadData = async () => {
       try {
         setLoading(true);
         const questionsData = await fetchQuestions();
-       // const languagesData = await fetchLanguages();
         setQuestions(questionsData);
-        //setLanguages(languagesData);
       } catch (error) {
         console.error('Error loading data:', error);
       } finally {
@@ -41,7 +39,13 @@ const AdminPanel = () => {
 
   const handleCreate = async (values: QuestionType) => {
     try {
-      await createQuestion(values);
+
+      const transformedData: TransformedQuestionType = {
+        ...values,
+        options: values.options?.map((option) => option.option) || [],
+      };
+  
+      await createQuestion(transformedData);
       message.success('Question created successfully');
       const questionsData = await fetchQuestions();
       setQuestions(questionsData);
@@ -51,10 +55,16 @@ const AdminPanel = () => {
       message.error('Failed to create question. Please try again.');
     }
   };
-
+  
   const handleUpdate = async (id: string, values: QuestionType) => {
     try {
-      await updateQuestion(id, values);
+
+      const transformedData: TransformedQuestionType = {
+        ...values,
+        options: values.options?.map((option) => option.option) || [],
+      };
+  
+      await updateQuestion(id, transformedData);
       message.success('Question updated successfully');
       const questionsData = await fetchQuestions();
       setQuestions(questionsData);
@@ -64,7 +74,8 @@ const AdminPanel = () => {
       message.error('Failed to update question. Please try again.');
     }
   };
-
+  
+  
   const handleDelete = async (id: string) => {
     try {
       await deleteQuestion(id);
@@ -75,7 +86,6 @@ const AdminPanel = () => {
       message.error('Failed to delete question. Please try again.');
     }
   };
-
   const columns = [
     { title: 'Question Text', dataIndex: 'questionText', key: 'questionText' },
     { title: 'Language', dataIndex: 'language', key: 'language' },
@@ -83,19 +93,20 @@ const AdminPanel = () => {
       title: 'Options',
       dataIndex: 'options',
       key: 'options',
-      render: (options: string[]) => options.join(', ')
+      render: (options: Option[]) => options.map(opt => opt.option).join(', ')
     },
     {
       title: 'Action',
       key: 'action',
       render: (text: any, record: QuestionType) => (
         <span>
-          <Button type="link" onClick={() => { setEditingQuestion(record); setVisible(true); form.setFieldsValue(record); }}>Edit</Button>
+          <Button type="link" onClick={() => { setEditingQuestion(record); setVisible(true); form.setFieldsValue({ ...record, options: record.options?.map(option => ({ option })) }); }}>Edit</Button>
           <Button type="link" onClick={() => handleDelete(record._id!)}>Delete</Button>
         </span>
       ),
     },
   ];
+  
 
   const showModal = () => {
     setVisible(true);
@@ -113,16 +124,6 @@ const AdminPanel = () => {
     } else {
       handleCreate(values);
     }
-  };
-
-  const addOption = () => {
-    const options = form.getFieldValue('options') || [];
-    form.setFieldsValue({ options: [...options, ''] });
-  };
-
-  const removeOption = (index: number) => {
-    const options = form.getFieldValue('options') || [];
-    form.setFieldsValue({ options: options.filter((_: any, i: number) => i !== index) });
   };
 
   return (
@@ -174,11 +175,7 @@ const AdminPanel = () => {
             )}
           </Form.List>
           <Form.Item name="correctOption" label="Correct Option" rules={[{ required: true, message: 'Please select the correct option!' }]}>
-            <Select>
-              {form.getFieldValue('options')?.map((option: string, index: number) => (
-                <Select.Option key={index} value={option}>{option}</Select.Option>
-              ))}
-            </Select>
+            <Input placeholder="Correct Option" />
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit">
