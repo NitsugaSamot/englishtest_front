@@ -4,7 +4,7 @@ import config from '@/config/config';
 
 export async function fetchQuestions() {
   try {
-    const response = await axios.get(`${config.WEB_API_URL}/question`);
+    const response = await axios.get(`${config.WEB_API_URL}/api/question`);
     return response.data;
   } catch (error) {
     console.error('Error fetching questions:', error);
@@ -14,7 +14,7 @@ export async function fetchQuestions() {
 
 export async function fetchLanguages() {
   try {
-    const response = await axios.get(`${`${config.WEB_API_URL}/question/languages`}`);
+    const response = await axios.get(`${`${config.WEB_API_URL}/api/question/languages`}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching languages:', error);
@@ -24,7 +24,7 @@ export async function fetchLanguages() {
 
 export async function createQuestion(question: QuestionType) {
   try {
-    const response = await axios.post(`${config.WEB_API_URL}/question`, question);
+    const response = await axios.post(`${config.WEB_API_URL}/api/question`, question);
     return response.data;
   } catch (error) {
     console.error('Error creating question:', error);
@@ -34,7 +34,7 @@ export async function createQuestion(question: QuestionType) {
 
 export async function updateQuestion(id: string, question: QuestionType) {
   try {
-    const response = await axios.put(`${config.WEB_API_URL}/${id}`, question);
+    const response = await axios.put(`${config.WEB_API_URL}/api/${id}`, question);
     return response.data;
   } catch (error) {
     console.error('Error updating question:', error);
@@ -44,7 +44,7 @@ export async function updateQuestion(id: string, question: QuestionType) {
 
 export async function deleteQuestion(id: string) {
   try {
-    const response = await axios.delete(`${config.WEB_API_URL}/${id}`);
+    const response = await axios.delete(`${config.WEB_API_URL}/api/${id}`);
     return response.data;
   } catch (error) {
     console.error('Error deleting question:', error);

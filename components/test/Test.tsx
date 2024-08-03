@@ -18,7 +18,7 @@ const QuestionsList: React.FC = () => {
   useEffect(() => {
     const loadQuestions = async () => {
       try {
-        const response = await fetch(`${config.WEB_API_URL}/question`);
+        const response = await fetch(`${config.WEB_API_URL}/api/question`);
         if (!response) {
           throw new Error('Failed to fetch questions');
         }

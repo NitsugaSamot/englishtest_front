@@ -8,7 +8,7 @@ const LoginForm = () => {
     console.log('Form values:', values); 
 
     try {
-      const response = await axios.post(`${config.WEB_API_URL}/auth/login`, values);
+      const response = await axios.post(`${config.WEB_API_URL}/api/auth/login`, values);
       console.log('Login successful:', response.data);
 
       localStorage.setItem('token', response.data.token);
