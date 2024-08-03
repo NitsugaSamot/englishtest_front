@@ -1,0 +1,30 @@
+.question-card {
+    margin: 2rem;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .question-language {
+    color: #8c8c8c;
+    margin-bottom: 16px;
+  }
+  
+  .options-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .option-radio {
+    margin-bottom: 8px;
+  }
+  
+  .option-radio .ant-radio-inner {
+    border-color: #1890ff;
+  }
+  
+  .option-radio .ant-radio-checked .ant-radio-inner {
+    background-color: #1890ff;
+    border-color: #1890ff;
+  }
+  
