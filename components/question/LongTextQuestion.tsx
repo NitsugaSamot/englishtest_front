@@ -36,7 +36,7 @@ const LongTextQuestion: React.FC<LongTextQuestionProps> = ({ question }) => {
                   checked={selectedOption === optionIndex}
                   onChange={() => handleOptionChange(optionIndex)}
                 />
-                <label htmlFor={`${question._id}-${index}-${optionIndex}`}>{option.text}</label>
+                <label htmlFor={`${question._id}-${index}-${optionIndex}`}></label>
               </div>
             ))}
           </div>

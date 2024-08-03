@@ -33,7 +33,7 @@ const TwoParagraphsQuestion: React.FC<TwoParagraphsQuestionProps> = ({ question 
               checked={selectedOption === index}
               onChange={() => handleOptionChange(index)}
             />
-            <label htmlFor={`${question._id}-${index}`}>{option.text}</label>
+            <label htmlFor={`${question._id}-${index}`}></label>
           </div>
         ))}
       </div>
