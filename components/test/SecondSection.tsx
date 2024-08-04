@@ -26,7 +26,7 @@ const SecondSection: React.FC = () => {
   useEffect(() => {
     const loadQuestions = async () => {
       try {
-        const response = await fetch(`${config.WEB_API_URL}/api/second-section`);
+        const response = await fetch(`${config.WEB_API_URL}/api/secondSection`);
         if (!response.ok) {
           throw new Error('Failed to fetch questions');
         }
