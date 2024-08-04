@@ -1,43 +1,35 @@
 import React, { useState } from 'react';
-import { Option, Paragraph } from '../../types';
+import { Card, Radio, Typography, Divider } from 'antd';
+import './styles.css';
+
+const { Title, Paragraph } = Typography;
+
+interface QuestionType {
+  _id: string;
+  questionText: string;
+  correctAnswer: 'A' | 'B' | 'Both';
+}
 
 interface TwoParagraphsQuestionProps {
-  question: {
-    _id: string;
-    paragraphs?: Paragraph[]; 
-    options?: Option[];
-    category: string;
-  };
+  question: QuestionType;
 }
 
 const TwoParagraphsQuestion: React.FC<TwoParagraphsQuestionProps> = ({ question }) => {
-  const [selectedOption, setSelectedOption] = useState<number | null>(null);
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
-  const handleOptionChange = (index: number) => {
-    setSelectedOption(index);
+  const handleOptionChange = (e: any) => {
+    setSelectedOption(e.target.value);
   };
 
   return (
-    <div>
-      {question.paragraphs?.map((paragraph, index) => (
-        <p key={index}>{paragraph.text}</p>
-      ))}
-      <div>
-        {question.options?.map((option, index) => (
-          <div key={index}>
-            <input
-              type="radio"
-              id={`${question._id}-${index}`}
-              name={`question-${question._id}`}
-              value={index}
-              checked={selectedOption === index}
-              onChange={() => handleOptionChange(index)}
-            />
-            <label htmlFor={`${question._id}-${index}`}></label>
-          </div>
-        ))}
-      </div>
-    </div>
+    <Card className="question-card">
+      <Title level={4}>{question.questionText}</Title>
+      <Radio.Group onChange={handleOptionChange} value={selectedOption}>
+        <Radio value="A">Paragraph A</Radio>
+        <Radio value="B">Paragraph B</Radio>
+        <Radio value="Both">Both</Radio>
+      </Radio.Group>
+    </Card>
   );
 };
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Carousel } from 'antd';
 import type { CarouselRef } from 'antd/es/carousel';
 import QuestionsList from '../test/Test';
+import SecondSection from '../test/SecondSection';
 
 const TestCarousel: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState<number>(300); 
@@ -55,7 +56,7 @@ const TestCarousel: React.FC = () => {
         </div>
         <div>
           <h3>Parte 2</h3>
-          <QuestionsList />
+          <SecondSection />
         </div>
         <div>
           <h3>Parte 3</h3>

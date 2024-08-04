@@ -38,3 +38,13 @@ export interface TransformedQuestionType {
   questionType: string;
   language: string;
 }
+
+export interface ParagraphComparisonQuestionType {
+  _id: string;
+  paragraphA: string;
+  paragraphB: string;
+  questions: {
+    questionText: string;
+    correctAnswer: 'A' | 'B' | 'Both';
+  }[];
+}
