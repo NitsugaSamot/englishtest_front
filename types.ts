@@ -5,10 +5,24 @@ export interface Option {
 
 
 export interface Paragraph {
+  _id: string;
   text: string;
 }
 
 export interface RelatedQuestion {
+  text: string;
+  options: Option[];
+}
+
+
+export interface Option {
+  _id: string;
+  text: string;
+  isCorrect: boolean;
+}
+
+export interface RelatedQuestion {
+  _id: string;
   text: string;
   options: Option[];
 }
@@ -47,4 +61,11 @@ export interface ParagraphComparisonQuestionType {
     questionText: string;
     correctAnswer: 'A' | 'B' | 'Both';
   }[];
+}
+
+export interface LongTextQuestionType {
+  _id: string;
+  paragraphs: Paragraph[];
+  relatedQuestions: RelatedQuestion[];
+  category: string;
 }

@@ -1,48 +1,53 @@
 import React, { useState } from 'react';
-import { Option, Paragraph, RelatedQuestion } from '../../types'; // Importa los tipos necesarios
+import { Card, Typography, Checkbox, Divider } from 'antd';
+import { LongTextQuestionType } from '@/types';
+
+const { Title, Paragraph } = Typography;
 
 interface LongTextQuestionProps {
-  question: {
-    _id: string;
-    paragraphs?: Paragraph[]; // Cambiar a opcional
-    relatedQuestions?: RelatedQuestion[]; // Cambiar a opcional
-    category: string;
-  };
+  question: LongTextQuestionType;
 }
 
 const LongTextQuestion: React.FC<LongTextQuestionProps> = ({ question }) => {
-  const [selectedOption, setSelectedOption] = useState<number | null>(null);
+  const [selectedOptions, setSelectedOptions] = useState<Set<string>>(new Set());
 
-  const handleOptionChange = (index: number) => {
-    setSelectedOption(index);
+  const handleOptionChange = (questionId: string, optionId: string) => {
+    setSelectedOptions(prev => {
+      const newSelection = new Set(prev);
+      if (newSelection.has(optionId)) {
+        newSelection.delete(optionId);
+      } else {
+        newSelection.add(optionId);
+      }
+      return newSelection;
+    });
   };
 
   return (
-    <div>
-      {question.paragraphs?.map((paragraph, index) => (
-        <p key={index}>{paragraph.text}</p>
+    <Card style={{ marginBottom: '20px' }}>
+      <Title level={4}>Category: {question.category}</Title>
+      {question.paragraphs.map(paragraph => (
+        <div key={paragraph._id}>
+          <Paragraph>{paragraph.text}</Paragraph>
+          <Divider />
+        </div>
       ))}
-      <div>
-        {question.relatedQuestions?.map((relatedQuestion, index) => (
-          <div key={index}>
-            <h3>{relatedQuestion.text}</h3>
-            {relatedQuestion.options.map((option, optionIndex) => (
-              <div key={optionIndex}>
-                <input
-                  type="radio"
-                  id={`${question._id}-${index}-${optionIndex}`}
-                  name={`related-question-${question._id}-${index}`}
-                  value={optionIndex}
-                  checked={selectedOption === optionIndex}
-                  onChange={() => handleOptionChange(optionIndex)}
-                />
-                <label htmlFor={`${question._id}-${index}-${optionIndex}`}></label>
-              </div>
-            ))}
-          </div>
-        ))}
-      </div>
-    </div>
+
+      {question.relatedQuestions.map(relatedQuestion => (
+        <div key={relatedQuestion._id} style={{ marginBottom: '20px' }}>
+          <Title level={5}>{relatedQuestion.text}</Title>
+          {relatedQuestion.options.map(option => (
+            <Checkbox
+              key={option._id}
+              checked={selectedOptions.has(option._id)}
+              onChange={() => handleOptionChange(relatedQuestion._id, option._id)}
+            >
+              {option.text}
+            </Checkbox>
+          ))}
+        </div>
+      ))}
+    </Card>
   );
 };
 

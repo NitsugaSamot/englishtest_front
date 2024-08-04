@@ -1,4 +1,3 @@
-// src/components/Header.tsx
 import React from 'react';
 import { Layout, Menu, Typography } from 'antd';
 import Image from 'next/image';
