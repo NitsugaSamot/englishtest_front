@@ -1,12 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CompleteSentenceQuestion from '../question/CompleteSentenceQuestion';
 import config from '@/config/config';
+
+interface OptionType {
+  option: string;
+  isCorrect: boolean;
+  _id: string;
+}
 
 interface QuestionType {
   _id: string;
   questionText: string;
   language: string;
-  options: string[];
+  options: OptionType[];
 }
 
 const QuestionsList: React.FC = () => {
@@ -14,12 +20,11 @@ const QuestionsList: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-
   useEffect(() => {
     const loadQuestions = async () => {
       try {
         const response = await fetch(`${config.WEB_API_URL}/api/question`);
-        if (!response) {
+        if (!response.ok) {
           throw new Error('Failed to fetch questions');
         }
         const data: QuestionType[] = await response.json();
@@ -41,8 +46,14 @@ const QuestionsList: React.FC = () => {
   return (
     <div>
       {questions.length > 0 ? (
-        questions.map(question => (
-          <CompleteSentenceQuestion key={question._id} question={question} />
+        questions.map((question) => (
+          <CompleteSentenceQuestion
+            key={question._id}
+            question={{
+              ...question,
+              options: question.options.map(option => option.option)
+            }}
+          />
         ))
       ) : (
         <p>No questions available</p>
@@ -52,3 +63,4 @@ const QuestionsList: React.FC = () => {
 };
 
 export default QuestionsList;
+

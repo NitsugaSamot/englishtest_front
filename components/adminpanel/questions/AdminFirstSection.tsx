@@ -1,15 +1,8 @@
-'use client';
 import React, { useEffect, useState } from 'react';
-import { Table, Button, Modal, Form, Input, message, Space, Select } from 'antd';
-import { QuestionType } from '@/types'; 
+import { Table, Button, Modal, Form, Input, message, Space, Select, Checkbox } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import { 
-  fetchQuestions, 
-  createQuestion, 
-  updateQuestion, 
-  deleteQuestion 
-} from '@/api/questionApi'; 
-import { TransformedQuestionType, Option } from '@/types';
+import { QuestionType, Option, TransformedQuestionType } from '@/types';
+import { fetchQuestions, createQuestion, updateQuestion, deleteQuestion } from '@/api/questionApi';
 
 const AdminFirstSection = () => {
   const [questions, setQuestions] = useState<QuestionType[]>([]);
@@ -38,10 +31,10 @@ const AdminFirstSection = () => {
 
   const handleCreate = async (values: QuestionType) => {
     try {
-
       const transformedData: TransformedQuestionType = {
         ...values,
-        options: values.options?.map((option) => option.option) || [],
+        options: values.options || [], 
+        correctOption: values.options?.find(option => option.isCorrect)?.option || '',
       };
   
       await createQuestion(transformedData);
@@ -54,14 +47,21 @@ const AdminFirstSection = () => {
       message.error('Failed to create question. Please try again.');
     }
   };
-  
+
   const handleUpdate = async (id: string, values: QuestionType) => {
     try {
-
       const transformedData: TransformedQuestionType = {
         ...values,
-        options: values.options?.map((option) => option.option) || [],
+        options: values.options?.map(option => ({
+          _id: option._id,  
+          text: option.text, 
+          option: option.option,
+          isCorrect: option.isCorrect,
+        })) || [],
       };
+  
+      const correctOption = transformedData.options.find(opt => opt.isCorrect)?.option || '';
+      transformedData.correctOption = correctOption;
   
       await updateQuestion(id, transformedData);
       message.success('Question updated successfully');
@@ -74,7 +74,7 @@ const AdminFirstSection = () => {
     }
   };
   
-  
+
   const handleDelete = async (id: string) => {
     try {
       await deleteQuestion(id);
@@ -85,9 +85,11 @@ const AdminFirstSection = () => {
       message.error('Failed to delete question. Please try again.');
     }
   };
+
   const columns = [
     { title: 'Question Text', dataIndex: 'questionText', key: 'questionText' },
     { title: 'Language', dataIndex: 'language', key: 'language' },
+    { title: 'Points', dataIndex: 'points', key: 'points' },
     {
       title: 'Options',
       dataIndex: 'options',
@@ -99,13 +101,28 @@ const AdminFirstSection = () => {
       key: 'action',
       render: (text: any, record: QuestionType) => (
         <span>
-          <Button type="link" onClick={() => { setEditingQuestion(record); setVisible(true); form.setFieldsValue({ ...record, options: record.options?.map(option => ({ option })) }); }}>Edit</Button>
+          <Button
+            type="link"
+            onClick={() => {
+              setEditingQuestion(record);
+              setVisible(true);
+              form.setFieldsValue({
+                ...record,
+                options: record.options?.map(option => ({
+                  option: option.option,
+                  isCorrect: option.isCorrect,
+                })),
+                points: record.points,
+              });
+            }}
+          >
+            Edit
+          </Button>
           <Button type="link" onClick={() => handleDelete(record._id!)}>Delete</Button>
         </span>
       ),
     },
   ];
-  
 
   const showModal = () => {
     setVisible(true);
@@ -146,6 +163,9 @@ const AdminFirstSection = () => {
               ))}
             </Select>
           </Form.Item>
+          <Form.Item name="points" label="Points" rules={[{ required: true, message: 'Please input the points!' }]}>
+            <Input type="number" min={0} />
+          </Form.Item>
           <Form.List name="options">
             {(fields, { add, remove }) => (
               <>
@@ -159,9 +179,15 @@ const AdminFirstSection = () => {
                     >
                       <Input placeholder="Option" />
                     </Form.Item>
-                    <Button onClick={() => remove(name)}>
-                      Remove
-                    </Button>
+                    <Form.Item
+                      {...restField}
+                      name={[name, 'isCorrect']}
+                      fieldKey={[fieldKey ?? name]}
+                      valuePropName="checked"
+                    >
+                      <Checkbox>Correct</Checkbox>
+                    </Form.Item>
+                    <Button onClick={() => remove(name)}>Remove</Button>
                   </Space>
                 ))}
                 <Form.Item>
@@ -172,9 +198,6 @@ const AdminFirstSection = () => {
               </>
             )}
           </Form.List>
-          <Form.Item name="correctOption" label="Correct Option" rules={[{ required: true, message: 'Please select the correct option!' }]}>
-            <Input placeholder="Correct Option" />
-          </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit">
               {editingQuestion ? 'Update Question' : 'Create Question'}

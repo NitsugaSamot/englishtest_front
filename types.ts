@@ -1,6 +1,9 @@
 
 export interface Option {
+  _id: string;
+  text: string;
   option: string;
+  isCorrect: boolean;
 }
 
 
@@ -38,20 +41,37 @@ export interface QuestionType {
   category: string;
   questionType: string;
   language: string;
+  isCorrect: boolean;
+  points: number;
 }
 
-
 export interface TransformedQuestionType {
-  _id: string;
+  _id?: string; // Añadido para compatibilidad con la creación y actualización
   questionText?: string;
   paragraphs?: Paragraph[];
   relatedQuestions?: RelatedQuestion[];
-  options: string[];  
+  options: Option[];  // Cambia de `string[]` a `Option[]`
+  correctOption?: string;  // Añadido para manejar la opción correcta
   correctOptionIndex?: number;
-  category: string;
-  questionType: string;
-  language: string;
+  category?: string;
+  questionType?: string;
+  language?: string;
+  isCorrect?: boolean;
+  points: number;
 }
+
+// export interface TransformedQuestionType {
+//   _id: string;
+//   questionText?: string;
+//   paragraphs?: Paragraph[];
+//   relatedQuestions?: RelatedQuestion[];
+//   options: string[];  
+//   correctOptionIndex?: number;
+//   category: string;
+//   questionType: string;
+//   language: string;
+//   isCorrect: boolean;
+// }
 
 export interface ParagraphComparisonQuestionType {
   _id: string;
