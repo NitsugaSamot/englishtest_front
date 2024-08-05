@@ -1,6 +1,6 @@
-'use client'
+'use client';
 import React, { useEffect, useState } from 'react';
-import { Table, Button, Modal, Form, Input, message, Space, Select } from 'antd';
+import { Table, Button, Modal, Form, Input, message, Space, Checkbox } from 'antd';
 import { LongTextQuestionType } from '@/types';
 import { PlusOutlined } from '@ant-design/icons';
 import { 
@@ -72,41 +72,24 @@ const AdminThirdSection = () => {
 
   const columns = [
     { title: 'Category', dataIndex: 'category', key: 'category' },
+    { title: 'Text', dataIndex: 'text', key: 'text' },
     {
-      title: 'Paragraphs',
-      dataIndex: 'paragraphs',
-      key: 'paragraphs',
-      render: (paragraphs: { text: string }[]) => paragraphs.map(p => p.text).join(', ')
-    },
-    {
-      title: 'Related Questions',
-      dataIndex: 'relatedQuestions',
-      key: 'relatedQuestions',
-      render: (relatedQuestions: { text: string }[]) => relatedQuestions.map(q => q.text).join(', ')
-    },
-    {
-      title: 'Action',
-      key: 'action',
-      render: (text: any, record: LongTextQuestionType) => (
-        <span>
-          <Button type="link" onClick={() => { setEditingQuestion(record); setVisible(true); form.setFieldsValue(record); }}>Edit</Button>
-          <Button type="link" onClick={() => handleDelete(record._id)}>Delete</Button>
-        </span>
+      title: 'Actions',
+      key: 'actions',
+      render: (text: string, record: LongTextQuestionType) => (
+        <Space size="middle">
+          <Button onClick={() => {
+            setEditingQuestion(record);
+            setVisible(true);
+            form.setFieldsValue(record);
+          }}>Edit</Button>
+          <Button danger onClick={() => handleDelete(record._id)}>Delete</Button>
+        </Space>
       ),
     },
   ];
 
-  const showModal = () => {
-    setVisible(true);
-    setEditingQuestion(null);
-    form.resetFields();
-  };
-
-  const handleCancel = () => {
-    setVisible(false);
-  };
-
-  const onFinish = (values: LongTextQuestionType) => {
+  const handleFinish = (values: LongTextQuestionType) => {
     if (editingQuestion) {
       handleUpdate(editingQuestion._id, values);
     } else {
@@ -116,106 +99,104 @@ const AdminThirdSection = () => {
 
   return (
     <>
-      <Button type="primary" onClick={showModal}>Create Question</Button>
-      <Table dataSource={questions} columns={columns} loading={loading} rowKey="_id" />
-      <Modal
-        title={editingQuestion ? 'Edit Question' : 'Create Question'}
-        visible={visible}
-        onCancel={handleCancel}
-        footer={null}
+      <Button 
+        type="primary" 
+        icon={<PlusOutlined />} 
+        onClick={() => {
+          setEditingQuestion(null);
+          setVisible(true);
+        }}
+        style={{ marginBottom: '20px' }}
       >
-        <Form form={form} onFinish={onFinish} layout="vertical">
+        Add Question
+      </Button>
+      <Table columns={columns} dataSource={questions} loading={loading} rowKey="_id" />
+      <Modal
+        title={editingQuestion ? "Edit Question" : "Add Question"}
+        visible={visible}
+        onCancel={() => setVisible(false)}
+        onOk={() => form.submit()}
+      >
+        <Form form={form} onFinish={handleFinish} layout="vertical">
           <Form.Item name="category" label="Category" rules={[{ required: true, message: 'Please input the category!' }]}>
             <Input />
           </Form.Item>
-          <Form.List name="paragraphs">
-            {(fields, { add, remove }) => (
-              <>
-                {fields.map(({ key, name, fieldKey, ...restField }) => (
-                  <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
-                    <Form.Item
-                      {...restField}
-                      name={[name, 'text']}
-                      fieldKey={[fieldKey ?? name, 'text']}
-                      rules={[{ required: true, message: 'Please input the paragraph text!' }]}
-                    >
-                      <Input.TextArea placeholder="Paragraph Text" />
-                    </Form.Item>
-                    <Button onClick={() => remove(name)}>Remove</Button>
-                  </Space>
-                ))}
-                <Form.Item>
-                  <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                    Add Paragraph
-                  </Button>
-                </Form.Item>
-              </>
-            )}
-          </Form.List>
+          <Form.Item name="text" label="Text" rules={[{ required: true, message: 'Please input the text!' }]}>
+            <Input.TextArea />
+          </Form.Item>
           <Form.List name="relatedQuestions">
             {(fields, { add, remove }) => (
               <>
-                {fields.map(({ key, name, fieldKey, ...restField }) => (
-                  <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
+                {fields.map((field, index) => (
+                  <div key={field.key} style={{ marginBottom: 8 }}>
                     <Form.Item
-                      {...restField}
-                      name={[name, 'text']}
-                      fieldKey={[fieldKey ?? name, 'text']}
-                      rules={[{ required: true, message: 'Please input the related question text!' }]}
+                      {...field}
+                      name={[field.name, 'text']}
+                      fieldKey={[field.key, 'text']} 
+                      label={`Related Question ${index + 1}`}
+                      rules={[{ required: true, message: 'Please input the question!' }]}
                     >
-                      <Input placeholder="Related Question Text" />
+                      <Input />
                     </Form.Item>
-                    <Form.List name={[name, 'options']}>
+                    <Form.List name={[field.name, 'options']}>
                       {(optionFields, { add: addOption, remove: removeOption }) => (
                         <>
-                          {optionFields.map(({ key: optionKey, name: optionName, fieldKey: optionFieldKey, ...restOptionField }) => (
-                            <Space key={optionKey} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
+                          {optionFields.map((optionField, optionIndex) => (
+                            <div key={optionField.key} style={{ display: 'flex', marginBottom: 8 }}>
                               <Form.Item
-                                {...restOptionField}
-                                name={[optionName, 'text']}
-                                fieldKey={[optionFieldKey ?? optionName, 'text']}
-                                rules={[{ required: true, message: 'Please input the option text!' }]}
+                                {...optionField}
+                                name={[optionField.name, 'text']}
+                                fieldKey={[optionField.key, 'text']} 
+                                label={`Option ${optionIndex + 1}`}
+                                rules={[{ required: true, message: 'Please input the option!' }]}
+                                style={{ flex: 1 }}
                               >
-                                <Input placeholder="Option Text" />
+                                <Input />
                               </Form.Item>
                               <Form.Item
-                                {...restOptionField}
-                                name={[optionName, 'isCorrect']}
-                                fieldKey={[optionFieldKey ?? optionName, 'isCorrect']}
+                                {...optionField}
+                                name={[optionField.name, 'isCorrect']}
+                                fieldKey={[optionField.key, 'isCorrect']} 
                                 valuePropName="checked"
+                                initialValue={false}  
+                                style={{ marginLeft: 8 }}
                               >
-                                <Select placeholder="Is Correct">
-                                  <Select.Option value={true}>True</Select.Option>
-                                  <Select.Option value={false}>False</Select.Option>
-                                </Select>
+                                <Checkbox>Correct</Checkbox>
                               </Form.Item>
-                              <Button onClick={() => removeOption(optionName)}>Remove</Button>
-                            </Space>
+                              <Button
+                                danger
+                                onClick={() => removeOption(optionField.name)}
+                                style={{ marginLeft: 8 }}
+                              >
+                                Remove
+                              </Button>
+                            </div>
                           ))}
                           <Form.Item>
-                            <Button type="dashed" onClick={() => addOption()} block icon={<PlusOutlined />}>
+                            <Button type="dashed" onClick={() => addOption({ text: '', isCorrect: false })}>
                               Add Option
                             </Button>
                           </Form.Item>
                         </>
                       )}
                     </Form.List>
-                    <Button onClick={() => remove(name)}>Remove</Button>
-                  </Space>
+                    <Button
+                      danger
+                      onClick={() => remove(field.name)}
+                      style={{ marginBottom: 8 }}
+                    >
+                      Remove Related Question
+                    </Button>
+                  </div>
                 ))}
                 <Form.Item>
-                  <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                  <Button type="dashed" onClick={() => add()}>
                     Add Related Question
                   </Button>
                 </Form.Item>
               </>
             )}
           </Form.List>
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              {editingQuestion ? 'Update' : 'Create'}
-            </Button>
-          </Form.Item>
         </Form>
       </Modal>
     </>

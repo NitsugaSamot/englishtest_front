@@ -1,0 +1,15 @@
+.carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+  }
+  
+  .carousel-arrow-prev {
+    left: 10px; 
+  }
+  
+  .carousel-arrow-next {
+    right: 10px;
+  }
+  

@@ -65,7 +65,8 @@ export interface ParagraphComparisonQuestionType {
 
 export interface LongTextQuestionType {
   _id: string;
-  paragraphs: Paragraph[];
+  // paragraphs: Paragraph[];
   relatedQuestions: RelatedQuestion[];
   category: string;
+  text: string;
 }

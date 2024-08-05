@@ -43,7 +43,7 @@ const TestCarousel: React.FC = () => {
   };
 
   return (
-    <div className="relative max-w-4xl mx-auto p-4">
+    <div className="">
       {/* Temporizador */}
       <div className="mb-4 text-center text-lg font-semibold">
         Time Left: {formatTime(timeLeft)}

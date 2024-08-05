@@ -11,7 +11,7 @@ interface LongTextQuestionProps {
 const LongTextQuestion: React.FC<LongTextQuestionProps> = ({ question }) => {
   const [selectedOptions, setSelectedOptions] = useState<Set<string>>(new Set());
 
-  const handleOptionChange = (questionId: string, optionId: string) => {
+  const handleOptionChange = (optionId: string) => {
     setSelectedOptions(prev => {
       const newSelection = new Set(prev);
       if (newSelection.has(optionId)) {
@@ -26,13 +26,8 @@ const LongTextQuestion: React.FC<LongTextQuestionProps> = ({ question }) => {
   return (
     <Card style={{ marginBottom: '20px' }}>
       <Title level={4}>Category: {question.category}</Title>
-      {question.paragraphs.map(paragraph => (
-        <div key={paragraph._id}>
-          <Paragraph>{paragraph.text}</Paragraph>
-          <Divider />
-        </div>
-      ))}
-
+      <Paragraph>{question.text}</Paragraph>
+      <Divider />
       {question.relatedQuestions.map(relatedQuestion => (
         <div key={relatedQuestion._id} style={{ marginBottom: '20px' }}>
           <Title level={5}>{relatedQuestion.text}</Title>
@@ -40,7 +35,7 @@ const LongTextQuestion: React.FC<LongTextQuestionProps> = ({ question }) => {
             <Checkbox
               key={option._id}
               checked={selectedOptions.has(option._id)}
-              onChange={() => handleOptionChange(relatedQuestion._id, option._id)}
+              onChange={() => handleOptionChange(option._id)}
             >
               {option.text}
             </Checkbox>
