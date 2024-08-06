@@ -151,6 +151,7 @@ const AdminFirstSection = () => {
         visible={visible}
         onCancel={handleCancel}
         footer={null}
+        width={1000} 
       >
         <Form form={form} onFinish={onFinish} layout="vertical">
           <Form.Item name="questionText" label="Question Text" rules={[{ required: true, message: 'Please input the question text!' }]}>

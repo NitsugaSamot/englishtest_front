@@ -15,7 +15,7 @@ const Header: React.FC = () => {
       </div>
       <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['test']}>
         <Menu.Item key="test">
-          <Link href="/test">
+          <Link href="/introTest">
             Test
           </Link>
         </Menu.Item>

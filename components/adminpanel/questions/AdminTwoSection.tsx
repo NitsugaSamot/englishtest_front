@@ -118,6 +118,7 @@ const AdminTwoSection = () => {
         visible={visible}
         onCancel={handleCancel}
         footer={null}
+        width={1000} 
       >
         <Form form={form} onFinish={onFinish} layout="vertical">
           <Form.Item name="paragraphA" label="Paragraph A" rules={[{ required: true, message: 'Please input paragraph A!' }]}>

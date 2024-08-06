@@ -12,7 +12,7 @@ const TestCarousel: React.FC = () => {
   const carouselRef = useRef<CarouselRef>(null);
 
   useEffect(() => {
-    // Configura un temporizador para contar hacia atrás
+
     const timer = setInterval(() => {
       setTimeLeft(prevTime => {
         if (prevTime <= 0) {
@@ -29,13 +29,12 @@ const TestCarousel: React.FC = () => {
     return () => clearInterval(timer);
   }, [currentSlide]);
 
-  // Cambio de sección
   const handleAfterChange = (current: number) => {
     setCurrentSlide(current);
     setTimeLeft(300); 
   };
 
-  // Función para formatear el tiempo en Min:Seg
+
   const formatTime = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -44,7 +43,6 @@ const TestCarousel: React.FC = () => {
 
   return (
     <div className="">
-      {/* Temporizador */}
       <div className="mb-4 text-center text-lg font-semibold">
         Time Left: {formatTime(timeLeft)}
       </div>

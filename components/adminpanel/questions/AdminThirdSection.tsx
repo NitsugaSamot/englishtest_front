@@ -116,19 +116,20 @@ const AdminThirdSection = () => {
         visible={visible}
         onCancel={() => setVisible(false)}
         onOk={() => form.submit()}
+        width={1000} 
       >
         <Form form={form} onFinish={handleFinish} layout="vertical">
           <Form.Item name="category" label="Category" rules={[{ required: true, message: 'Please input the category!' }]}>
-            <Input />
+            <Input style={{ fontSize: '16px', padding: '10px' }} />
           </Form.Item>
           <Form.Item name="text" label="Text" rules={[{ required: true, message: 'Please input the text!' }]}>
-            <Input.TextArea />
+            <Input.TextArea rows={6} style={{ fontSize: '16px', padding: '10px' }} />
           </Form.Item>
           <Form.List name="relatedQuestions">
             {(fields, { add, remove }) => (
               <>
                 {fields.map((field, index) => (
-                  <div key={field.key} style={{ marginBottom: 8 }}>
+                  <div key={field.key} style={{ marginBottom: 16 }}>
                     <Form.Item
                       {...field}
                       name={[field.name, 'text']}
@@ -136,7 +137,7 @@ const AdminThirdSection = () => {
                       label={`Related Question ${index + 1}`}
                       rules={[{ required: true, message: 'Please input the question!' }]}
                     >
-                      <Input />
+                      <Input style={{ fontSize: '16px', padding: '10px' }} />
                     </Form.Item>
                     <Form.List name={[field.name, 'options']}>
                       {(optionFields, { add: addOption, remove: removeOption }) => (
@@ -151,7 +152,7 @@ const AdminThirdSection = () => {
                                 rules={[{ required: true, message: 'Please input the option!' }]}
                                 style={{ flex: 1 }}
                               >
-                                <Input />
+                                <Input style={{ fontSize: '16px', padding: '10px' }} />
                               </Form.Item>
                               <Form.Item
                                 {...optionField}
