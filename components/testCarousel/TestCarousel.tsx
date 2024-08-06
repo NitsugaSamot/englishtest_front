@@ -54,14 +54,14 @@ const TestCarousel: React.FC = () => {
         Time Left: {formatTime(timeLeft)}
       </div>
       <Steps current={currentStep} onChange={handleChange} style={{ marginBottom: '20px' }}>
-        <Step title="Test" />
-        <Step title="Admin Panel" />
+        <Step title="Complete the sentence with the correct option" />
+        <Step title="Read and answer" />
         <Step title="Read and Answer" />
       </Steps>
       <div className="step-content">
         {currentStep === 0 && (
           <div className="p-6 bg-white rounded-lg shadow-md">
-            <Title level={3}>Choose the correct answer</Title>
+            <Title level={3}>Choose the correct option</Title>
             <QuestionsList />
           </div>
         )}
