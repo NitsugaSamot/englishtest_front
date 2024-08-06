@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Card, Typography, Checkbox, Divider } from 'antd';
+import SendButton from './SendButton'; 
 import { LongTextQuestionType } from '@/types';
+import './styles.css';
 
 const { Title, Paragraph } = Typography;
 
@@ -42,6 +44,7 @@ const LongTextQuestion: React.FC<LongTextQuestionProps> = ({ question }) => {
           ))}
         </div>
       ))}
+      <SendButton tooltipText="The evaluation part is in progress. You can only view the questions for now." />
     </Card>
   );
 };

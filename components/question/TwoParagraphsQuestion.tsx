@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Card, Radio, Typography, Divider } from 'antd';
+import { Card, Radio, Typography } from 'antd';
+import SendButton from './SendButton'; 
 import './styles.css';
 
-const { Title, Paragraph } = Typography;
+const { Title } = Typography;
 
 interface QuestionType {
   _id: string;
@@ -29,6 +30,7 @@ const TwoParagraphsQuestion: React.FC<TwoParagraphsQuestionProps> = ({ question 
         <Radio value="B">Paragraph B</Radio>
         <Radio value="Both">Both</Radio>
       </Radio.Group>
+      <SendButton tooltipText="The evaluation part is in progress. You can only view the questions for now." />
     </Card>
   );
 };

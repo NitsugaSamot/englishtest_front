@@ -28,3 +28,17 @@
     border-color: #1890ff;
   }
   
+
+  .send-button {
+    margin-top: 20px;
+    font-size: 16px;
+    width: 150px;
+    text-align: center;
+  }
+  
+  .send-button[disabled] {
+    background-color: #d9d9d9;
+    border-color: #d9d9d9;
+    color: #bfbfbf;
+  }
+  

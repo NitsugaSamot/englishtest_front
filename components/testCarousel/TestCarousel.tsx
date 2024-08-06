@@ -1,39 +1,46 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Carousel, Button } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Steps, Button, Typography } from 'antd';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
-import type { CarouselRef } from 'antd/es/carousel';
 import QuestionsList from '../test/Test';
 import SecondSection from '../test/SecondSection';
 import ThirdSection from '../test/ThirdSection';
 
+const { Title } = Typography;
+
+const { Step } = Steps;
+
 const TestCarousel: React.FC = () => {
-  const [timeLeft, setTimeLeft] = useState<number>(300); 
-  const [currentSlide, setCurrentSlide] = useState<number>(0);
-  const carouselRef = useRef<CarouselRef>(null);
+  const [timeLeft, setTimeLeft] = useState<number>(300);
+  const [currentStep, setCurrentStep] = useState<number>(0);
 
   useEffect(() => {
-
     const timer = setInterval(() => {
       setTimeLeft(prevTime => {
         if (prevTime <= 0) {
-          if (carouselRef.current) {
-            carouselRef.current.next();
-            setTimeLeft(300);
-          }
-          return 300; 
+          const nextStep = (currentStep + 1) % 3;
+          setCurrentStep(nextStep);
+          setTimeLeft(300);
+          return 300;
         }
         return prevTime - 1;
       });
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [currentSlide]);
+  }, [currentStep]);
 
-  const handleAfterChange = (current: number) => {
-    setCurrentSlide(current);
+  const handleChange = (step: number) => {
+    setCurrentStep(step);
     setTimeLeft(300); 
   };
 
+  const handlePrev = () => {
+    setCurrentStep(prevStep => (prevStep - 1 + 3) % 3);
+  };
+
+  const handleNext = () => {
+    setCurrentStep(prevStep => (prevStep + 1) % 3);
+  };
 
   const formatTime = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
@@ -42,33 +49,50 @@ const TestCarousel: React.FC = () => {
   };
 
   return (
-    <div className="">
+    <div style={{ width: '70%', margin: '0 auto' }}>
       <div className="mb-4 text-center text-lg font-semibold">
         Time Left: {formatTime(timeLeft)}
       </div>
-      <Carousel
-        ref={carouselRef}
-        afterChange={handleAfterChange}
-        dots={false}
-        arrows={true}
-        prevArrow={<Button className="absolute left-0 top-1/2 transform -translate-y-1/2" icon={<LeftOutlined />} />}
-        nextArrow={<Button className="absolute right-0 top-1/2 transform -translate-y-1/2" icon={<RightOutlined />} />}
-      >
-        <div className="p-6 bg-white rounded-lg shadow-md">
-          <h3 className="text-2xl font-bold mb-4">Choose the correct answer</h3>
-          <QuestionsList />
-        </div>
-        <div className="p-6 bg-white rounded-lg shadow-md">
-          <h3 className="text-2xl font-bold mb-4">Choose the correct option</h3>
-          <SecondSection />
-        </div>
-        <div className="p-6 bg-white rounded-lg shadow-md">
-          <h3 className="text-2xl font-bold mb-4">Read the text and then answer the questions</h3>
-          <ThirdSection />
-        </div>
-      </Carousel>
+      <Steps current={currentStep} onChange={handleChange} style={{ marginBottom: '20px' }}>
+        <Step title="Test" />
+        <Step title="Admin Panel" />
+        <Step title="Read and Answer" />
+      </Steps>
+      <div className="step-content">
+        {currentStep === 0 && (
+          <div className="p-6 bg-white rounded-lg shadow-md">
+            <Title level={3}>Choose the correct answer</Title>
+            <QuestionsList />
+          </div>
+        )}
+        {currentStep === 1 && (
+          <div className="p-6 bg-white rounded-lg shadow-md">
+            <Title level={3}>Choose the correct option</Title>
+            <SecondSection />
+          </div>
+        )}
+        {currentStep === 2 && (
+          <div className="p-6 bg-white rounded-lg shadow-md">
+            <Title level={3}>Read the text and then answer the questions</Title>
+            <ThirdSection />
+          </div>
+        )}
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
+        <Button 
+          onClick={handlePrev} 
+          icon={<LeftOutlined />} 
+          disabled={currentStep === 0}
+        />
+        <Button 
+          onClick={handleNext} 
+          icon={<RightOutlined />} 
+          disabled={currentStep === 2}
+        />
+      </div>
     </div>
   );
 };
 
 export default TestCarousel;
+

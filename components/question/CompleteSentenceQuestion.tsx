@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Card, Radio, Typography, Divider } from 'antd';
-import './styles.css'
+import SendButton from './SendButton'; 
+import './styles.css';
 
 const { Title, Paragraph } = Typography;
 
@@ -45,6 +46,7 @@ const CompleteSentenceQuestion: React.FC<CompleteSentenceQuestionProps> = ({ que
           <Paragraph>No options available</Paragraph>
         )}
       </div>
+      <SendButton tooltipText="The evaluation part is in progress. You can only view the questions for now." />
     </Card>
   );
 };
