@@ -13,7 +13,7 @@ const LoginForm = () => {
 
       localStorage.setItem('token', response.data.token);
 
-      window.location.href = '/test';
+      window.location.href = '/introTest';
     } catch (error) {
       message.error('Login failed. Please check your email and password.');
     }
